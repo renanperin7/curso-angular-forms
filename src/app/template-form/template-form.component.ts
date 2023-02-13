@@ -22,9 +22,12 @@ export class TemplateFormComponent implements OnInit {
 
   }
 
-  onSubmit(form: any) {
-    this.http.post('https://httpbin.org/post', JSON.stringify(form.value)).pipe(map((res: any) => res))
-    .subscribe(dados => console.log(dados));
+  onSubmit(formulario: any) {
+    this.http.post('https://httpbin.org/post', JSON.stringify(formulario.value)).pipe(map((res: any) => res))
+    .subscribe(dados => {
+      console.log(dados)
+      formulario.form.reset()
+    });
   }
 
   consultaCep(cep: any, form: any) {

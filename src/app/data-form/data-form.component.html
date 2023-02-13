@@ -1,1 +1,79 @@
-<p>data-form works!</p>
+<form class="form-horizontal" [formGroup]="formulario" (ngSubmit)="onSubmit()" >
+  <div class="form-group">
+
+    <div class="col-sm-12">
+      <label for="nome" class="form-label">Nome</label>
+      <input type="text" class="form-control" formControlName="nome" id="nome" placeholder="Nome">
+      <!-- <div>
+        {{ nome.className }}
+      </div> -->
+    </div>
+
+  </div>
+
+  <div class="form-group">
+
+    <div class="col-sm-12">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="email" id="email" placeholder="nome@email.com">
+    </div>
+
+  </div>
+
+  <div formGroupName="endereco">
+
+    <div class="form-group row">
+
+      <div class="col-sm-3">
+        <label for="cep" class="control-label">CEP</label>
+        <input type="text" class="form-control" formControlName="cep" id="cep" (blur)="consultaCep()">
+      </div>
+      <div class="col-sm-3">
+        <label for="numero" class="control-label">Número</label>
+        <input type="text" class="form-control" formControlName="numero" id="numero">
+      </div>
+      <div class="col-sm-6">
+        <label for="complemento" class="control-label">Complemento</label>
+        <input type="text" class="form-control" formControlName="complemento" id="complemento">
+      </div>
+
+    </div>
+
+    <div class="form-group">
+
+      <div class="col-sm-12">
+        <label for="rua" class="form-label">Rua</label>
+      </div>
+      <div class="col-sm-12">
+        <input type="text" class="form-control" formControlName="rua" id="rua">
+      </div>
+
+    </div>
+
+    <div class="form-group row">
+
+      <div class="col-md-5">
+        <label for="bairro" class="control-label">Bairro</label>
+        <input type="text" class="form-control" formControlName="bairro" id="bairro">
+      </div>
+      <div class="col-md-4">
+        <label for="cidade" class="control-label">Cidade</label>
+        <input type="text" class="form-control" formControlName="cidade" id="cidade">
+      </div>
+      <div class="col-md-3">
+        <label for="estado" class="control-label">Estado</label>
+        <input type="text" class="form-control" formControlName="estado" id="estado">
+      </div>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <button class="btn" (click)="resetar()">Cancelar</button>
+
+  <app-form-debug [form]="formulario"></app-form-debug>
+</form>
+
