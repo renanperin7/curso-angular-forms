@@ -3,6 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
+import { DropdownService } from './../shared/services/dropdown.service';
+import { Estadobr } from '../shared/models/estadobr';
+import { ConsultaCepService } from '../shared/services/consulta-cep.service';
+
 @Component({
   selector: 'app-data-form',
   templateUrl: './data-form.component.html',
@@ -12,13 +16,19 @@ export class DataFormComponent implements OnInit{
 
   formulario!: FormGroup;
 
+  estados!: Estadobr[];
+
   constructor(
     private formBuilder: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private dropdownService: DropdownService,
+    private cepService: ConsultaCepService
     ) {
   }
 
   ngOnInit() {
+
+    this.dropdownService.getEstadoBr().subscribe(dados => {this.estados = dados, console.log(dados)})
 
     // this.formulario = new FormGroup({
     //   nome: new FormControl(null),
@@ -42,17 +52,33 @@ export class DataFormComponent implements OnInit{
   }
 
   onSubmit() {
-    console.log(this.formulario.value)
+    if(this.formulario.valid) {
 
-    this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)).pipe(map((res: any) => res))
-    .subscribe(dados => {
-      console.log(dados);
-      // reset form
-      // this.formulario.reset()
-      this.resetar()
-    },
-    // (_error: any) => alert('erro')
-    );
+      this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)).pipe(map((res: any) => res))
+      .subscribe(dados => {
+        console.log(dados);
+        // reset form
+        // this.formulario.reset()
+        this.resetar()
+      },
+      // (_error: any) => alert('erro')
+      );
+    } else {
+     this.verificaValidacoesForm(this.formulario)
+    }
+  }
+
+  verificaValidacoesForm(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const controle = formGroup.get(campo)
+
+      controle?.markAsDirty()
+
+      if(controle instanceof FormGroup) {
+        this.verificaValidacoesForm(controle)
+      }
+
+    })
   }
 
   resetar() {
@@ -63,19 +89,8 @@ export class DataFormComponent implements OnInit{
 
     let cep: string = this.formulario.get('endereco.cep')?.value
 
-    cep.replace(/\D/g, '');
-
-    if (cep != "") {
-      var validacep = /^[0-9]{8}$/;
-
-      if(validacep.test(cep)) {
-
-        this.resetaDadosForm()
-
-        this.http.get(`//viacep.com.br/ws/${cep}/json`).pipe(map((dados: any) => dados))
-        .subscribe(dados => this.populaDadosForm(dados));
-
-      }
+    if(cep != null && cep !== '') {
+      this.cepService.consultaCep(cep).subscribe(dados => this.populaDadosForm(dados));
     }
   }
 
