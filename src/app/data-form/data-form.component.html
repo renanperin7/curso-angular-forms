@@ -73,18 +73,65 @@
 
   <br>
 
-  <div class="form-group">
-    <div class="col-md-3">
+  <div class="form-group row">
+    <div class="col-md-4">
       <label for="cargo" class="control-label">Cargo</label>
       <select class="form-control" formControlName="cargo" id="cargo" [compareWith]="compararCargos">
         <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{ cargo.desc }}</option>
       </select>
     </div>
+
+    <div class="col-md-4">
+      <label for="tecnologias" class="control-label">Tecnologias</label>
+      <select multiple class="form-control" formControlName="tecnologias" id="tecnologias">
+        <option *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{ tecnologia.desc }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label for="newsletter" class="control-label">NewsLetter</label>
+      <div id="newsletter" class="row">
+        <div class="col-sm-2" *ngFor="let item of newsletterOp">
+          <label class="radio-inline">
+            <input type="radio" [value]="item.valor" formControlName="newsletter"> {{ item.desc }}
+          </label>
+        </div>
+      </div>
+    </div>
+
   </div>
- <br>
+
+  <br>
+
+  <div class="form-group row">
+
+    <div class="col-md-3">
+      <div class="checkbox">
+        <label class="checkbox-inline">
+          <input type="checkbox" formControlName="termos"> Aceito os termos
+        </label>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <label for="frameworks">Frameworks</label>
+      <div id="frameworks" class="row">
+        <div class="checkbox" class="col-sm-4" formArrayName="frameworks" *ngFor="let item of getFrameworksControls(); let i = index">
+          <label class="checkbox-inline">
+            <input type="checkbox" [formControlName]="i"> {{ frameworks[i] }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <br>
+
   <button type="submit" class="btn btn-primary">Submit</button>
   <button class="btn" (click)="resetar()">Cancelar</button>
   <button class="btn" (click)="setarCargo()">Cargo</button>
+  <button class="btn" (click)="setarTecnologias()">Tecnologias</button>
 
   <app-form-debug [form]="formulario"></app-form-debug>
 </form>

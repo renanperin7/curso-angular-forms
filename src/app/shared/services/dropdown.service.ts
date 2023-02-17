@@ -35,4 +35,38 @@ export class DropdownService {
     ]
   }
 
+  getTecnologias() {
+    return [
+      {
+        nome: 'Java',
+        desc: 'Java'
+      },
+      {
+        nome: 'Javascript',
+        desc: 'Javascript'
+      },
+      {
+        nome: 'Typescript',
+        desc: 'TypeScript'
+      },
+      {
+        nome: 'Node',
+        desc: 'Node'
+      },
+    ]
+  }
+
+  getNewsletter() {
+    return [
+      {
+        valor: 's',
+        desc: 'Sim'
+      },
+      {
+        valor: 'n',
+        desc: 'Não'
+      }
+    ]
+  }
+
 }

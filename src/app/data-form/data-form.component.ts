@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DropdownService } from './../shared/services/dropdown.service';
 import { Estadobr } from '../shared/models/estadobr';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
+import { FormValidations } from '../shared/form-validations';
 
 @Component({
   selector: 'app-data-form',
@@ -23,6 +24,12 @@ export class DataFormComponent implements OnInit{
 
   cargos!: any[]
 
+  tecnologias!: any[]
+
+  newsletterOp!: any[]
+
+  frameworks = ['Angular', 'React', 'Vue']
+
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
@@ -36,6 +43,10 @@ export class DataFormComponent implements OnInit{
     this.estados = this.dropdownService.getEstadoBr()
 
     this.cargos = this.dropdownService.getCargos()
+
+    this.tecnologias = this.dropdownService.getTecnologias()
+
+    this.newsletterOp = this.dropdownService.getNewsletter()
 
     // this.dropdownService.getEstadoBr().subscribe(dados => {this.estados = dados, console.log(dados)})
 
@@ -57,15 +68,40 @@ export class DataFormComponent implements OnInit{
         estado: [null, Validators.required]
       }),
 
-      cargo: [null]
+      cargo: [null],
+      tecnologias: [ null],
+      newsletter: ['s'],
+      termos: [null, Validators.pattern('true')],
+      frameworks: this.buildFrameworks()
     })
 
   }
 
+  buildFrameworks() {
+
+    const values = this.frameworks.map(v => new FormControl(false))
+
+    return this.formBuilder.array(values, FormValidations.requiredMinCheckbox(1))
+
+    // this.formBuilder.array([
+    //   new FormControl(false),
+    //   new FormControl(false),
+    //   new FormControl(false)
+    // ])
+  }
+
+
   onSubmit() {
+
+    let valueSubmit = Object.assign({}, this.formulario.value)
+
+    valueSubmit = Object.assign(valueSubmit, {
+      frameworks: valueSubmit.frameworks.map((v: any, i: any) => v ? this.frameworks[i] : null).filter((v: any) => v !== null)
+    })
+
     if(this.formulario.valid) {
 
-      this.http.post('https://httpbin.org/post', JSON.stringify(this.formulario.value)).pipe(map((res: any) => res))
+      this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit)).pipe(map((res: any) => res))
       .subscribe(dados => {
         console.log(dados);
         // reset form
@@ -148,4 +184,11 @@ export class DataFormComponent implements OnInit{
     return obj1 && obj2 ? (obj1.nome === obj2.nome) : obj1 && obj2
   }
 
+  setarTecnologias() {
+    this.formulario.get('tecnologia')?.setValue(['Java, Javascript, Typescript'])
+  }
+
+  getFrameworksControls() {
+    return this.formulario.get('frameworks') ? (<FormArray>this.formulario.get('frameworks')).controls : null;
+  }
 }
