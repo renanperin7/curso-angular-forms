@@ -4,10 +4,10 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { FormValidations } from './../shared/form-validations';
 import { DropdownService } from './../shared/services/dropdown.service';
 import { Estadobr } from '../shared/models/estadobr';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
-import { FormValidations } from '../shared/form-validations';
 
 @Component({
   selector: 'app-data-form',
@@ -58,8 +58,9 @@ export class DataFormComponent implements OnInit{
     this.formulario = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       email: [null, [Validators.required, Validators.email]],
+      confirmarEmail: [null, [FormValidations.equalsTo('email')]],
       endereco: this.formBuilder.group({
-        cep: [null, Validators.required],
+        cep: [null, [Validators.required, FormValidations.cepValidator]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
