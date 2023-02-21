@@ -9,19 +9,24 @@ import { DropdownService } from './../shared/services/dropdown.service';
 import { Estadobr } from '../shared/models/estadobr';
 import { ConsultaCepService } from '../shared/services/consulta-cep.service';
 import { VerficaEmailService } from './services/verfica-email.service';
+import { BaseFormComponent } from '../shared/base-form/base-form.component';
+import { Cidade } from '../shared/models/cidade';
 
 @Component({
   selector: 'app-data-form',
   templateUrl: './data-form.component.html',
   styleUrls: ['./data-form.component.css']
 })
-export class DataFormComponent implements OnInit{
+export class DataFormComponent extends BaseFormComponent implements OnInit{
 
-  formulario!: FormGroup;
 
-  // estados!: Estadobr[];
+  // formulario!: FormGroup;
 
-  estados!: Observable<Estadobr[]>;
+  estados!: Estadobr[];
+
+  cidades!: Cidade[]
+
+  // estados!: Observable<Estadobr[]>;
 
   cargos!: any[]
 
@@ -38,11 +43,14 @@ export class DataFormComponent implements OnInit{
     private cepService: ConsultaCepService,
     private verficaEmailService: VerficaEmailService
     ) {
+      super()
   }
 
-  ngOnInit() {
+  override ngOnInit() {
 
-    this.estados = this.dropdownService.getEstadoBr()
+    // this.estados = this.dropdownService.getEstadoBr()
+    this.dropdownService.getEstadoBr()
+      .subscribe(dados => this.estados = dados)
 
     this.cargos = this.dropdownService.getCargos()
 
@@ -89,6 +97,18 @@ export class DataFormComponent implements OnInit{
       )
       .subscribe(dados => dados ? this.populaDadosForm(dados) : {})
 
+      // this.dropdownService.getCidades(8).subscribe(console.log)
+
+    this.formulario.get('endereco.estado')?.valueChanges
+      .pipe(
+        tap(estado => console.log(estado)),
+        map((estado: any) => this.estados.filter(e => e.sigla === estado)),
+        map((estados: any) => estados && estados.length > 0 ? estados[0].id : EMPTY),
+        switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+        tap(console.log)
+      )
+      .subscribe(cidades => this.cidades = cidades)
+
   }
 
   buildFrameworks() {
@@ -104,18 +124,14 @@ export class DataFormComponent implements OnInit{
     // ])
   }
 
-
-  onSubmit() {
-
+  submit() {
     let valueSubmit = Object.assign({}, this.formulario.value)
 
     valueSubmit = Object.assign(valueSubmit, {
       frameworks: valueSubmit.frameworks.map((v: any, i: any) => v ? this.frameworks[i] : null).filter((v: any) => v !== null)
     })
 
-    if(this.formulario.valid) {
-
-      this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit)).pipe(map((res: any) => res))
+    this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit)).pipe(map((res: any) => res))
       .subscribe(dados => {
         console.log(dados);
         // reset form
@@ -124,26 +140,6 @@ export class DataFormComponent implements OnInit{
       },
       // (_error: any) => alert('erro')
       );
-    } else {
-     this.verificaValidacoesForm(this.formulario)
-    }
-  }
-
-  verificaValidacoesForm(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach((campo) => {
-      const controle = formGroup.get(campo)
-
-      controle?.markAsDirty()
-
-      if(controle instanceof FormGroup) {
-        this.verificaValidacoesForm(controle)
-      }
-
-    })
-  }
-
-  resetar() {
-    this.formulario.reset()
   }
 
   consultaCep() {
@@ -213,9 +209,5 @@ export class DataFormComponent implements OnInit{
     )
   }
 
-}
-
-function SchedulerLike(): any {
-  throw new Error('Function not implemented.');
 }
 

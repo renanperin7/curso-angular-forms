@@ -1,5 +1,8 @@
 <form class="form-horizontal" [formGroup]="formulario" (ngSubmit)="onSubmit()" >
-  <div class="form-group">
+
+  <app-input-field class="col-sm-12" formControlName="nome" id="nome" label="Nome" placeholder="Nome" [control]="$any(formulario).controls.nome"></app-input-field>
+
+  <!-- <div class="form-group">
 
     <div class="col-sm-12">
       <label for="nome" class="form-label">Nome</label>
@@ -8,32 +11,75 @@
       <app-error-msg [control]="$any(formulario).controls.nome" label="Nome"></app-error-msg>
     </div>
 
-  </div>
+  </div> -->
   <br>
 
-  <div class="form-group">
+  <app-input-field class="col-sm-12" formControlName="email" id="email" type="email" label="Email" placeholder="nome@email.com" [control]="$any(formulario).controls.email"></app-input-field>
+
+  <!-- <div class="form-group">
 
     <div class="col-sm-12">
       <label for="email" class="form-label">Email</label>
       <input type="email" class="form-control" formControlName="email" id="email" placeholder="nome@email.com">
+      <app-error-msg [control]="$any(formulario).controls.email" label="Email"></app-error-msg>
     </div>
 
-  </div>
+  </div> -->
   <br>
 
-  <div class="form-group">
+  <app-input-field class="col-sm-12" formControlName="confirmarEmail" id="confirmarEmail" type="email" label="Confirmar Email" placeholder="nome@email.com" [control]="$any(formulario).controls.confirmarEmail"></app-input-field>
+
+  <!-- <div class="form-group">
 
     <div class="col-sm-12">
       <label for="confirmarEmail" class="form-label">Confirmar Email</label>
       <input type="confirmarEmail" class="form-control" formControlName="confirmarEmail" id="confirmarEmail" placeholder="nome@email.com">
+      <app-error-msg [control]="$any(formulario).controls.confirmarEmail" label="Confirmar Email"></app-error-msg>
     </div>
 
-  </div>
+  </div> -->
   <br>
 
   <div formGroupName="endereco">
+    <div class="form-group row">
+      <app-input-field class="col-sm-3" formControlName="cep" id="cep" label="CEP" placeholder="" [control]="$any(formulario).get('endereco.cep')"></app-input-field>
+      <app-input-field class="col-sm-3" formControlName="numero" id="numero" label="Número" placeholder="" [control]="$any(formulario).get('endereco.numero')"></app-input-field>
+      <app-input-field class="col-sm-6" formControlName="complemento" id="complemento" label="Complemento" placeholder=""></app-input-field>
+    </div>
+
+  <br>
+
+    <div class="form-group">
+      <app-input-field class="col-sm-3" formControlName="rua" id="rua" label="Rua" placeholder="" [control]="$any(formulario).get('endereco.rua')"></app-input-field>
+    </div>
+
+  <br>
 
     <div class="form-group row">
+      <div class="col-md-5">
+        <label for="bairro" class="control-label">Bairro</label>
+        <input type="text" class="form-control" formControlName="bairro" id="bairro">
+      </div>
+
+      <div class="col-md-4">
+        <label for="cidade" class="control-label">Cidade</label>
+        <select class="form-control" formControlName="cidade" id="cidade">
+          <option *ngFor="let cidade of cidades" [value]="cidade.nome">{{ cidade.nome }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label for="estado" class="control-label">Estado</label>
+        <select class="form-control" formControlName="estado" id="estado">
+          <option *ngFor="let estado of estados" [value]="estado.sigla">{{ estado.nome }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+   <!-- <div formGroupName="endereco">
+
+   <div class="form-group row">
 
       <div class="col-sm-3">
         <label for="cep" class="control-label">CEP</label>
@@ -48,9 +94,9 @@
         <input type="text" class="form-control" formControlName="complemento" id="complemento">
       </div>
 
-    </div>
-<br>
-    <div class="form-group">
+    </div> -->
+
+    <!-- <div class="form-group">
 
       <div class="col-sm-12">
         <label for="rua" class="form-label">Rua</label>
@@ -59,9 +105,9 @@
         <input type="text" class="form-control" formControlName="rua" id="rua">
       </div>
 
-    </div>
-<br>
-    <div class="form-group row">
+    </div> -->
+
+    <!-- <div class="form-group row">
 
       <div class="col-md-5">
         <label for="bairro" class="control-label">Bairro</label>
@@ -69,18 +115,20 @@
       </div>
       <div class="col-md-4">
         <label for="cidade" class="control-label">Cidade</label>
-        <input type="text" class="form-control" formControlName="cidade" id="cidade">
+        <select class="form-control" formControlName="cidade" id="cidade">
+          <option *ngFor="let cidade of cidades" [value]="cidade.nome">{{ cidade.nome }}</option>
+        </select>
       </div>
       <div class="col-md-3">
         <label for="estado" class="control-label">Estado</label>
         <select class="form-control" formControlName="estado" id="estado">
-          <option *ngFor="let estado of estados | async" [value]="estado.sigla">{{ estado.nome }}</option>
+          <option *ngFor="let estado of estados" [value]="estado.sigla">{{ estado.nome }}</option>
         </select>
       </div>
 
     </div>
 
-  </div>
+  </div> -->
 
   <br>
 
